@@ -1,40 +1,47 @@
 const r = require("raylib");
 const geometry = require("./geometry");
 
-const windowWidth = 600;
-const windowHeight = 400;
-const windowTitle = "Rectangle inside Rectangle";
+const window = {
+	width: 600,
+	height: 400,
+	title: "Rectangle inside Rectangle",
+};
 
 const FPS = 60;
 
-const outerRectangleWidth = 100;
-const outerRectangleHeight = 160;
+const outerRectangle = {
+	width: 100,
+	height: 160,
+};
 
-const innerRectangleWidth = 60;
-const innerRectangleHeight = 40;
+const innerRectangle = {
+	width: 60,
+	height: 40,
+};
 
 function running() { return !r.WindowShouldClose(); }
 
 function setup() {
-	r.InitWindow(windowWidth, windowHeight, windowTitle);
+	r.SetTraceLogLevel(r.LOG_NONE);
+	r.InitWindow(window.width, window.height, window.title);
 	r.SetTargetFPS(FPS);
+
+	outerRectangle.x = geometry.calcOffset(window.width, outerRectangle.width);
+	outerRectangle.y = geometry.calcOffset(window.height, outerRectangle.height);
+
+	innerRectangle.x = outerRectangle.x + geometry.calcOffset(outerRectangle.width, innerRectangle.width);
+	innerRectangle.y = outerRectangle.y + geometry.calcOffset(outerRectangle.height, innerRectangle.height);
 }
 
 function update() { }
 
 function draw() {
-	const outerX = geometry.calcOffset(windowWidth, outerRectangleWidth);
-	const outerY = geometry.calcOffset(windowHeight, outerRectangleHeight);
-
-	const innerX = outerX + geometry.calcOffset(outerRectangleWidth, innerRectangleWidth);
-	const innerY = outerY + geometry.calcOffset(outerRectangleHeight, innerRectangleHeight);
-
 	r.BeginDrawing();
 
 	r.ClearBackground(r.BLUE);
 
-	r.DrawRectangle(outerX, outerY, outerRectangleWidth, outerRectangleHeight, r.WHITE);
-	r.DrawRectangle(innerX, innerY, innerRectangleWidth, innerRectangleHeight, r.RED);
+	r.DrawRectangleRec(outerRectangle, r.WHITE);
+	r.DrawRectangleRec(innerRectangle, r.RED);
 
 	r.EndDrawing();
 }
